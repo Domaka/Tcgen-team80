@@ -1,3 +1,4 @@
+from itertools import product
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from django.forms import inlineformset_factory
@@ -29,12 +30,18 @@ def products(request):
     return render(request, "termsgen/products and templates/product.html",)
 
 def dashboard(request):
-    products = Product.objects.all()
+    products = product.objects.all()
 
     return render(request, "termsgen/dashboard/dashboard.html", {'products':products})
 
 def basic_info(request):
-    return render(request, "termsgen/dashboard/basic_info.html")
+    if request.method == 'POST':
+        form = CreateUserForm(request.POST)
+        if form.is_valid():
+            form.save()
+
+    context = {'form': form}
+    return render(request, "termsgen/dashboard/basic_info.html",context)
 
 def web_info(request):
     return render(request, "termsgen/dashboard/web_info.html")
